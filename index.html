@@ -161,6 +161,15 @@ figure.shot figcaption b{color:var(--navy2);font-weight:700}
 ol.steps li figure.shot{margin:10px 0 6px}
 .shot-tip{font-size:12.5px;color:var(--danger-ink);font-weight:600;margin:2px 0 0}
 
+/* embedded html editor */
+.editor-embed-wrap{margin:16px 0;border:1px solid var(--line);border-radius:12px;overflow:hidden;box-shadow:0 2px 12px rgba(20,41,75,.07);background:#0f1f38}
+@media(min-width:1101px){ .editor-embed-wrap{width:calc(100% + 460px);margin-left:-230px;margin-right:-230px;max-width:94vw} }
+.html-editor-frame{display:block;width:100%;height:82vh;min-height:560px;max-height:1100px;border:none;background:#fff}
+@media(max-width:900px){ .html-editor-frame{height:78vh;min-height:520px} }
+@media(max-width:480px){ .html-editor-frame{height:80vh;min-height:480px} }
+.src-link-btn{display:inline-flex;align-items:center;gap:8px;margin-top:10px;background:var(--navy);color:#fff;font-size:13.5px;font-weight:700;padding:10px 18px;border-radius:9px;text-decoration:none;transition:background .15s}
+.src-link-btn:hover{background:var(--navy2)}
+
 /* FAQ */
 .faq-cat{font-size:13px;font-weight:800;color:var(--navy);letter-spacing:.04em;margin:30px 0 12px;padding:8px 14px;background:var(--blue-soft);border-radius:9px;border-left:4px solid var(--navy2)}
 .faq-subcat{font-size:12.5px;font-weight:700;color:var(--navy2);margin:18px 0 8px 2px;text-transform:none}
@@ -275,7 +284,8 @@ html,body{max-width:100%;overflow-x:hidden}
       <div class="kicker">KIRD GUIDE</div>
       <h1>교육안내문 만들기 가이드</h1>
       <p>생성형 AI로 쉽게 안내문 만들기</p>
-      <p>최종 업데이트(ver.1.1) : 2026. 6. 17.</p>
+      <p>최종 업데이트(ver.1.2) : 2026. 6. 23.</p>
+      <p>주요 업데이트 : 글자 직접 고치기(html 편집기) 메뉴 추가</p>
     </div>
     <div class="sb-search">
       <div class="wrap">
@@ -794,7 +804,7 @@ HTML 생성 후에는 PPT와 비교하여 누락된 내용이나 확인이 필�
 
   /* ---------- 참고 5: 직접 고치기 ---------- */
   {
-    id:"ref-edit", group:"참고 — 더 쉽게 / 고치기", nav:"글자 직접 고치기", num:"📎",
+    id:"ref-edit", group:"참고 — 더 쉽게 / 고치기", nav:"글자 직접 고치기(txt 파일 수정)", num:"📎",
     title:"오타·날짜처럼 간단한 글자는 직접 고칠 수도 있어요",
     eyebrow:"참고 5",
     lead:"AI에게 다시 부탁하지 않고, 글자 몇 개만 빠르게 바꿀 때 쓰는 방법입니다. 디자인은 그대로 두고 ‘글자’만 바꿉니다. (날짜·시간·이름·전화번호·오타 등)",
@@ -825,6 +835,66 @@ HTML 생성 후에는 PPT와 비교하여 누락된 내용이나 확인이 필�
           <li>글자를 바꾼 뒤 안내문이 깨져 보이면, 백업본으로 되돌리고 그 부분은 AI에게 고쳐 달라고 하세요.</li>
           <li>일정 줄을 통째로 추가·삭제하거나 구조를 바꾸는 작업은 직접 하지 말고 AI에게 맡기는 것이 안전합니다.</li>
         </ul></div>
+
+      <div class="callout info"><div class="c-title">🖥️ 메모장 수정이 번거롭다면 — ‘HTML 편집기’를 써 보세요</div>
+        <p>메모장으로 고치는 방법은 <mark>바꾼 결과가 바로 보이지 않아</mark>, 저장하고 다시 파일을 열어 확인하는 과정을 반복해야 합니다. 어디를 고쳤는지 한눈에 보기 어렵고, 실수로 따옴표나 기호를 건드려 안내문이 깨질까 봐 부담스러울 수 있습니다.</p>
+        <p>이럴 때는 <b>‘글자 직접 고치기(html 편집기 사용)’</b> 메뉴의 HTML 편집기를 이용해 보세요. <mark>왼쪽에서 코드를 고치면 오른쪽 화면에 바뀐 모습이 곧바로 나타나</mark>므로, 결과를 눈으로 확인하면서 안심하고 수정할 수 있습니다.</p>
+        <ul>
+          <li>고친 내용이 <b>실시간으로 미리보기</b>에 반영됩니다. (저장 → 다시 열기 반복이 필요 없습니다)</li>
+          <li>완성된 파일을 <span class="kbd">파일 열기</span>로 불러와 고친 뒤, <span class="kbd">저장</span> 버튼으로 다시 내려받으면 됩니다.</li>
+          <li>코드 줄·글자 수가 표시되고, 화면을 좌우로 넓혔다 줄였다 하며 편하게 볼 수 있습니다.</li>
+        </ul>
+        <p style="margin-top:8px"><b>👉 왼쪽 메뉴의 ‘글자 직접 고치기(html 편집기 사용)’</b>에서 바로 사용해 보세요.</p></div>
+    `
+  },
+
+  /* ---------- 참고 5-2: 직접 고치기 (HTML 편집기) ---------- */
+  {
+    id:"ref-htmledit", group:"참고 — 더 쉽게 / 고치기", nav:"글자 직접 고치기(html 편집기 사용)", num:"📎",
+    title:"미리보기를 보면서 글자를 직접 고쳐요 (HTML 편집기)",
+    eyebrow:"참고 5-2",
+    lead:"메모장으로 고칠 때와 달리, 왼쪽에서 코드를 수정하면 오른쪽 화면에 바뀐 모습이 곧바로 나타납니다. 결과를 눈으로 확인하면서 글자·날짜·이름 등을 안전하게 고칠 수 있고, 다 고치면 파일로 내려받을 수 있습니다.",
+    body:`
+      <p style="font-size:12.5px;color:var(--muted);margin:-4px 0 18px">※ 본 편집기는 전문교육실(박상원 부연구위원)의 아이디어로 제작되었습니다. (출처: <a href="https://blog.naver.com/note2265/224229292535" target="_blank" rel="noopener" style="color:var(--navy2);text-decoration:underline">https://blog.naver.com/note2265/224229292535</a>)</p>
+
+      <h3 class="block-title"><span class="bi">📖</span>사용법 — 4단계면 됩니다</h3>
+      <div class="flow">
+        <div class="flow-step"><div class="fnum">1</div><div class="ftext"><b>파일 불러오기</b><span>오른쪽 위 <b>📂 파일 열기</b> 버튼을 누르거나, 완성된 HTML 파일을 편집기 위로 끌어다 놓습니다.</span></div></div>
+        <div class="flow-arrow">↓</div>
+        <div class="flow-step"><div class="fnum">2</div><div class="ftext"><b>왼쪽에서 글자 고치기</b><span>왼쪽 ‘코드 편집기’에서 바꿀 글자를 찾아 수정합니다. (<span class="kbd">Ctrl + F</span>로 찾기)</span></div></div>
+        <div class="flow-arrow">↓</div>
+        <div class="flow-step"><div class="fnum">3</div><div class="ftext"><b>오른쪽에서 결과 확인</b><span>오른쪽 ‘미리보기’ 화면에 바뀐 모습이 자동으로 나타납니다. (자동 새로고침)</span></div></div>
+        <div class="flow-arrow">↓</div>
+        <div class="flow-step"><div class="fnum">4</div><div class="ftext"><b>파일로 저장</b><span>다 고쳤으면 오른쪽 위 <b>💾 저장</b> 버튼을 눌러 HTML 파일을 내려받습니다.</span></div></div>
+      </div>
+
+      <div class="callout warn"><div class="c-title">⭐ 주요 기능 한눈에 보기</div>
+        <ul>
+          <li><b>📂 파일 열기 / 끌어다 놓기</b> — 완성된 HTML 안내문을 불러옵니다.</li>
+          <li><b>실시간 미리보기</b> — 코드를 고치면 오른쪽 화면에 바로 반영됩니다. (‘자동 새로고침’ 체크 시)</li>
+          <li><b>▶ 새로고침</b> — 미리보기를 수동으로 다시 그립니다.</li>
+          <li><b>복사</b> — 편집 중인 코드 전체를 클립보드에 복사합니다.</li>
+          <li><b>💾 저장</b> — 고친 HTML을 파일로 내려받습니다. (<span class="kbd">Ctrl + S</span>로도 가능)</li>
+          <li><b>좌우 너비 조절</b> · <b>줄·글자 수 표시</b> 등 편의 기능 제공</li>
+        </ul></div>
+
+      <div class="callout danger"><div class="c-title">🛡️ 꼭 지켜 주세요 — 안전하게 고치는 요령</div>
+        <ul>
+          <li>수정 전에 원본 파일을 복사해 두세요. (만일을 위한 백업)</li>
+          <li>따옴표(<b>""</b>) 안의 한글·숫자처럼 ‘글자’만 바꾸고, 따옴표·기호(<b>{ } , :</b> 등)는 건드리지 마세요.</li>
+          <li>오른쪽 미리보기가 깨져 보이면 바로 직전에 고친 부분을 되돌리세요.</li>
+          <li>일정 줄을 통째로 추가·삭제하거나 구조를 바꾸는 작업은 AI에게 맡기는 것이 안전합니다.</li>
+        </ul></div>
+
+      <h3 class="block-title"><span class="bi">✏️</span>HTML 편집기</h3>
+      <p>아래 편집기를 바로 사용할 수 있습니다. <b>📂 파일 열기</b>로 안내문을 불러온 뒤 왼쪽에서 글자를 고치면, 오른쪽에 바뀐 모습이 바로 나타납니다.</p>
+      <div class="editor-embed-wrap">
+        <iframe class="html-editor-frame" title="HTML 편집기" loading="lazy"></iframe>
+      </div>
+
+      <div class="callout warn"><div class="c-title">⚠️ 편집기 화면이 작거나, 작동이 안 되거나, 따로 사용하고 싶다면</div>
+        <p>편집기를 더 큰 화면에서 쓰고 싶거나, 브라우저·보안 설정 때문에 위 편집기가 잘 동작하지 않거나, 편집기만 따로 받아서 사용하고 싶다면 아래 출처 링크에서 편집기 파일을 내려받아 PC에서 직접 실행해 활용하시기 바랍니다.</p>
+        <a class="src-link-btn" href="https://blog.naver.com/note2265/224229292535" target="_blank" rel="noopener">🔗 출처 링크에서 편집기 파일 받기</a></div>
     `
   },
 
@@ -1173,13 +1243,30 @@ function renderContent(){
         ${p.lead?`<p class="lead">${p.lead}</p>`:""}
       </div>
       ${inner}
-      ${p.id==="ref-edit"?endBanner():""}
+      ${p.id==="ref-email"?endBanner():""}
     </section>`;
   });
   c.innerHTML = html;
+  injectHtmlEditor();
 }
 function endBanner(){
   return `<div class="end-banner"><h3>끝까지 따라오셨습니다 🎉</h3><p>이제 직접 만들어 보세요!</p></div>`;
+}
+/* 임베드된 HTML 편집기 iframe에 srcdoc 주입 */
+const HTML_EDITOR_B64 = "PCFET0NUWVBFIGh0bWw+CjxodG1sIGxhbmc9ImtvIj4KPGhlYWQ+CjxtZXRhIGNoYXJzZXQ9IlVURi04Ij4KPG1ldGEgbmFtZT0idmlld3BvcnQiIGNvbnRlbnQ9IndpZHRoPWRldmljZS13aWR0aCwgaW5pdGlhbC1zY2FsZT0xLjAiPgo8c3R5bGU+CiAgOnJvb3R7CiAgICAtLW5hdnk6IzFhM2E2YzsgLS1uYXZ5MjojMmM1ZjhhOyAtLW5hdnktZGVlcDojMTMyOTRiOwogICAgLS1saW5lOiNlNmViZjI7IC0tYmc6I2Y0ZjZmOTsgLS1jYXJkOiNmZmY7IC0tbXV0ZWQ6IzViNmI4MDsKICAgIC0tZWRpdG9yLWJnOiMwZjFmMzg7IC0tZWRpdG9yLXRleHQ6I2RiZTZmNTsgLS1iYXI6IzE2Mjk0YTsKICAgIC0tb2s6IzJlOGI1NzsgLS13YXJuOiNkOTgyMDA7CiAgfQogICp7bWFyZ2luOjA7cGFkZGluZzowO2JveC1zaXppbmc6Ym9yZGVyLWJveH0KICBodG1sLGJvZHl7aGVpZ2h0OjEwMCV9CiAgYm9keXsKICAgIGZvbnQtZmFtaWx5OidOb3RvIFNhbnMgS1InLCdTZWdvZSBVSScsc2Fucy1zZXJpZjsKICAgIGJhY2tncm91bmQ6dmFyKC0tYmcpOyBjb2xvcjojMWExYTFhOwogICAgZGlzcGxheTpmbGV4OyBmbGV4LWRpcmVjdGlvbjpjb2x1bW47IGhlaWdodDoxMDB2aDsgb3ZlcmZsb3c6aGlkZGVuOwogIH0KICBoZWFkZXJ7CiAgICBiYWNrZ3JvdW5kOnZhcigtLW5hdnktZGVlcCk7IGNvbG9yOiNmZmY7CiAgICBwYWRkaW5nOjlweCAxNHB4OyBkaXNwbGF5OmZsZXg7IGFsaWduLWl0ZW1zOmNlbnRlcjsKICAgIGp1c3RpZnktY29udGVudDpzcGFjZS1iZXR3ZWVuOyBnYXA6MTBweDsgZmxleC1zaHJpbms6MDsgZmxleC13cmFwOndyYXA7CiAgfQogIC5sb2dve2ZvbnQtc2l6ZToxMy41cHg7Zm9udC13ZWlnaHQ6ODAwO2xldHRlci1zcGFjaW5nOi4zcHg7ZGlzcGxheTpmbGV4O2FsaWduLWl0ZW1zOmNlbnRlcjtnYXA6N3B4fQogIC5sb2dvIC5kb3R7d2lkdGg6OHB4O2hlaWdodDo4cHg7Ym9yZGVyLXJhZGl1czo1MCU7YmFja2dyb3VuZDojN2ZiMGU4O2Rpc3BsYXk6aW5saW5lLWJsb2NrfQogIC5hY3Rpb25ze2Rpc3BsYXk6ZmxleDtnYXA6N3B4O2FsaWduLWl0ZW1zOmNlbnRlcjtmbGV4LXdyYXA6d3JhcH0KICAuYXV0by1sYWJlbHtmb250LXNpemU6MTJweDtjb2xvcjojYmNkNmYyO2Rpc3BsYXk6ZmxleDthbGlnbi1pdGVtczpjZW50ZXI7Z2FwOjVweDtjdXJzb3I6cG9pbnRlcjt1c2VyLXNlbGVjdDpub25lfQogIC5idG57CiAgICBwYWRkaW5nOjZweCAxMnB4O2JvcmRlci1yYWRpdXM6N3B4O2JvcmRlcjoxcHggc29saWQgcmdiYSgyNTUsMjU1LDI1NSwuMTgpOwogICAgYmFja2dyb3VuZDpyZ2JhKDI1NSwyNTUsMjU1LC4wOCk7Y29sb3I6I2RjZTZmMztmb250LXNpemU6MTIuNXB4O2ZvbnQtd2VpZ2h0OjYwMDsKICAgIGN1cnNvcjpwb2ludGVyO2ZvbnQtZmFtaWx5OmluaGVyaXQ7dHJhbnNpdGlvbjpiYWNrZ3JvdW5kIC4xNXMsdHJhbnNmb3JtIC4wOHM7CiAgfQogIC5idG46aG92ZXJ7YmFja2dyb3VuZDpyZ2JhKDI1NSwyNTUsMjU1LC4xNil9CiAgLmJ0bjphY3RpdmV7dHJhbnNmb3JtOnRyYW5zbGF0ZVkoMXB4KX0KICAuYnRuLXByaW1hcnl7YmFja2dyb3VuZDp2YXIoLS1uYXZ5Mik7Ym9yZGVyLWNvbG9yOiMzYTczYTU7Y29sb3I6I2ZmZn0KICAuYnRuLXByaW1hcnk6aG92ZXJ7YmFja2dyb3VuZDojM2E3M2E1fQogIC5tYWlue2Rpc3BsYXk6ZmxleDtmbGV4OjE7b3ZlcmZsb3c6aGlkZGVuO21pbi1oZWlnaHQ6MH0KICAucGFuZXtkaXNwbGF5OmZsZXg7ZmxleC1kaXJlY3Rpb246Y29sdW1uO21pbi13aWR0aDowfQogIC5lZGl0b3ItcGFuZXt3aWR0aDo1MCU7Ym9yZGVyLXJpZ2h0OjJweCBzb2xpZCB2YXIoLS1saW5lKX0KICAucHJldmlldy1wYW5le3dpZHRoOjUwJX0KICAucGFuZS1oZWFkewogICAgYmFja2dyb3VuZDojZmZmO3BhZGRpbmc6NnB4IDEzcHg7Zm9udC1zaXplOjExcHg7Zm9udC13ZWlnaHQ6ODAwOwogICAgdGV4dC10cmFuc2Zvcm06dXBwZXJjYXNlO2xldHRlci1zcGFjaW5nOjEuMnB4O2NvbG9yOnZhcigtLW5hdnkyKTsKICAgIGJvcmRlci1ib3R0b206MXB4IHNvbGlkIHZhcigtLWxpbmUpO2ZsZXgtc2hyaW5rOjA7ZGlzcGxheTpmbGV4O2FsaWduLWl0ZW1zOmNlbnRlcjtnYXA6NnB4OwogIH0KICAucGFuZS1oZWFkIC5wZG90e3dpZHRoOjdweDtoZWlnaHQ6N3B4O2JvcmRlci1yYWRpdXM6NTAlO2JhY2tncm91bmQ6I2U5NDU2MDtkaXNwbGF5OmlubGluZS1ibG9ja30KICAucGFuZS1oZWFkLnByZXYgLnBkb3R7YmFja2dyb3VuZDojNGVjY2EzfQogIC5iYWRnZXtmb250LXNpemU6MTBweDtiYWNrZ3JvdW5kOiNlOWY1ZWU7Y29sb3I6IzFmNmI0MDtwYWRkaW5nOjJweCA3cHg7Ym9yZGVyLXJhZGl1czoyMHB4O21hcmdpbi1sZWZ0OjhweDtmb250LXdlaWdodDo3MDB9CiAgLmJhZGdlLm9mZntiYWNrZ3JvdW5kOiNmZmY0ZTA7Y29sb3I6IzhhNWEwMH0KICB0ZXh0YXJlYXsKICAgIGZsZXg6MTtiYWNrZ3JvdW5kOnZhcigtLWVkaXRvci1iZyk7Y29sb3I6dmFyKC0tZWRpdG9yLXRleHQpO2JvcmRlcjpub25lO291dGxpbmU6bm9uZTsKICAgIHBhZGRpbmc6MTRweDtmb250LWZhbWlseTonQ29uc29sYXMnLCdDb3VyaWVyIE5ldycsbW9ub3NwYWNlO2ZvbnQtc2l6ZToxM3B4OwogICAgbGluZS1oZWlnaHQ6MS42NTtyZXNpemU6bm9uZTt0YWItc2l6ZToyO3doaXRlLXNwYWNlOnByZTsKICB9CiAgaWZyYW1le2ZsZXg6MTtib3JkZXI6bm9uZTtiYWNrZ3JvdW5kOiNmZmZ9CiAgLnN0YXR1c3sKICAgIGJhY2tncm91bmQ6I2VlZjNmYTtwYWRkaW5nOjRweCAxM3B4O2ZvbnQtc2l6ZToxMXB4O2NvbG9yOnZhcigtLW5hdnkyKTsKICAgIGRpc3BsYXk6ZmxleDtnYXA6MTRweDtmbGV4LXNocmluazowO2JvcmRlci10b3A6MXB4IHNvbGlkIHZhcigtLWxpbmUpOwogIH0KICAuZGl2aWRlcnt3aWR0aDo0cHg7YmFja2dyb3VuZDp2YXIoLS1saW5lKTtjdXJzb3I6Y29sLXJlc2l6ZTtmbGV4LXNocmluazowO3RyYW5zaXRpb246YmFja2dyb3VuZCAuMTVzfQogIC5kaXZpZGVyOmhvdmVye2JhY2tncm91bmQ6I2U5NDU2MH0KICAudG9hc3R7CiAgICBwb3NpdGlvbjpmaXhlZDtib3R0b206MThweDtsZWZ0OjUwJTt0cmFuc2Zvcm06dHJhbnNsYXRlWCgtNTAlKSB0cmFuc2xhdGVZKDE2cHgpOwogICAgYmFja2dyb3VuZDp2YXIoLS1uYXZ5KTtjb2xvcjojZmZmO3BhZGRpbmc6OXB4IDE4cHg7Ym9yZGVyLXJhZGl1czo4cHg7Zm9udC1zaXplOjEyLjVweDsKICAgIGZvbnQtd2VpZ2h0OjYwMDtvcGFjaXR5OjA7dHJhbnNpdGlvbjphbGwgLjNzO3BvaW50ZXItZXZlbnRzOm5vbmU7ei1pbmRleDo5OTsKICB9CiAgLnRvYXN0LnNob3d7b3BhY2l0eToxO3RyYW5zZm9ybTp0cmFuc2xhdGVYKC01MCUpIHRyYW5zbGF0ZVkoMCl9CiAgLmRyb3AtaGludHsKICAgIHBvc2l0aW9uOmFic29sdXRlO2luc2V0OjA7ZGlzcGxheTpub25lO2FsaWduLWl0ZW1zOmNlbnRlcjtqdXN0aWZ5LWNvbnRlbnQ6Y2VudGVyOwogICAgYmFja2dyb3VuZDpyZ2JhKDI2LDU4LDEwOCwuODUpO2NvbG9yOiNmZmY7Zm9udC1zaXplOjE2cHg7Zm9udC13ZWlnaHQ6NzAwO3otaW5kZXg6NTA7CiAgICBwb2ludGVyLWV2ZW50czpub25lOwogIH0KICBAbWVkaWEobWF4LXdpZHRoOjY4MHB4KXsKICAgIC5tYWlue2ZsZXgtZGlyZWN0aW9uOmNvbHVtbn0KICAgIC5lZGl0b3ItcGFuZSwucHJldmlldy1wYW5le3dpZHRoOjEwMCUhaW1wb3J0YW50O2hlaWdodDo1MCU7ZmxleDpub25lfQogICAgLmVkaXRvci1wYW5le2JvcmRlci1yaWdodDpub25lO2JvcmRlci1ib3R0b206MnB4IHNvbGlkIHZhcigtLWxpbmUpfQogICAgLmRpdmlkZXJ7ZGlzcGxheTpub25lfQogIH0KPC9zdHlsZT4KPC9oZWFkPgo8Ym9keT4KPGhlYWRlcj4KICA8ZGl2IGNsYXNzPSJsb2dvIj48c3BhbiBjbGFzcz0iZG90Ij48L3NwYW4+Jmx0Oy8mZ3Q7IEhUTUwg7Y647KeR6riwPC9kaXY+CiAgPGRpdiBjbGFzcz0iYWN0aW9ucyI+CiAgICA8bGFiZWwgY2xhc3M9ImF1dG8tbGFiZWwiPjxpbnB1dCB0eXBlPSJjaGVja2JveCIgaWQ9ImF1dG9SZWZyZXNoIiBjaGVja2VkIHN0eWxlPSJhY2NlbnQtY29sb3I6IzdmYjBlODsiPuyekOuPmSDsg4jroZzqs6Dsuag8L2xhYmVsPgogICAgPGJ1dHRvbiBjbGFzcz0iYnRuIiBvbmNsaWNrPSJyZWZyZXNoUHJldmlldygpIj7ilrYg7IOI66Gc6rOg7LmoPC9idXR0b24+CiAgICA8YnV0dG9uIGNsYXNzPSJidG4iIG9uY2xpY2s9ImNvcHlDb2RlKCkiPuuzteyCrDwvYnV0dG9uPgogICAgPGJ1dHRvbiBjbGFzcz0iYnRuIiBvbmNsaWNrPSJkb2N1bWVudC5nZXRFbGVtZW50QnlJZCgnZmlsZUlucHV0JykuY2xpY2soKSI+8J+TgiDtjIzsnbwg7Je06riwPC9idXR0b24+CiAgICA8aW5wdXQgdHlwZT0iZmlsZSIgaWQ9ImZpbGVJbnB1dCIgYWNjZXB0PSIuaHRtbCwuaHRtIiBzdHlsZT0iZGlzcGxheTpub25lIiBvbmNoYW5nZT0ibG9hZEZpbGUoZXZlbnQpIj4KICAgIDxidXR0b24gY2xhc3M9ImJ0biBidG4tcHJpbWFyeSIgb25jbGljaz0iZG93bmxvYWRGaWxlKCkiPvCfkr4g7KCA7J6lPC9idXR0b24+CiAgPC9kaXY+CjwvaGVhZGVyPgo8ZGl2IGNsYXNzPSJtYWluIiBpZD0ibWFpbkxheW91dCI+CiAgPGRpdiBjbGFzcz0icGFuZSBlZGl0b3ItcGFuZSIgaWQ9ImVkaXRvclBhbmUiPgogICAgPGRpdiBjbGFzcz0icGFuZS1oZWFkIj48c3BhbiBjbGFzcz0icGRvdCI+PC9zcGFuPuy9lOuTnCDtjrjsp5HquLA8c3BhbiBjbGFzcz0iYmFkZ2UiIGlkPSJhdXRvQmFkZ2UiPuyekOuPmSDsl4XrjbDsnbTtirgg7Lyc7KeQPC9zcGFuPjwvZGl2PgogICAgPHRleHRhcmVhIGlkPSJlZGl0b3IiIHNwZWxsY2hlY2s9ImZhbHNlIiBwbGFjZWhvbGRlcj0i7Jes6riw7JeQIEhUTUwg7L2U65Oc66W8IOu2meyXrOuEo+qxsOuCmCwg7JyEICfwn5OCIO2MjOydvCDsl7TquLAn66GcIOyViOuCtOusuOydhCDrtojrn6zsmKTshLjsmpQuIO2MjOydvOydhCDsnbQg7JiB7Jet7Jy866GcIOuBjOyWtOuLpCDrhpPslYTrj4Qg65Cp64uI64ukLiI+PC90ZXh0YXJlYT4KICAgIDxkaXYgY2xhc3M9InN0YXR1cyI+PHNwYW4gaWQ9ImxpbmVJbmZvIj4x7KSELCAx7Lm4PC9zcGFuPjxzcGFuIGlkPSJjaGFyQ291bnQiPjDsnpA8L3NwYW4+PC9kaXY+CiAgPC9kaXY+CiAgPGRpdiBjbGFzcz0iZGl2aWRlciIgaWQ9ImRpdmlkZXIiPjwvZGl2PgogIDxkaXYgY2xhc3M9InBhbmUgcHJldmlldy1wYW5lIiBpZD0icHJldmlld1BhbmUiIHN0eWxlPSJwb3NpdGlvbjpyZWxhdGl2ZSI+CiAgICA8ZGl2IGNsYXNzPSJwYW5lLWhlYWQgcHJldiI+PHNwYW4gY2xhc3M9InBkb3QiPjwvc3Bhbj7rr7jrpqzrs7TquLAgKOyImOyglSDqsrDqs7zqsIAg7Jes6riw7JeQIOuwlOuhnCDrs7TsnoXri4jri6QpPC9kaXY+CiAgICA8aWZyYW1lIGlkPSJwcmV2aWV3IiBzYW5kYm94PSJhbGxvdy1zY3JpcHRzIGFsbG93LXNhbWUtb3JpZ2luIj48L2lmcmFtZT4KICA8L2Rpdj4KPC9kaXY+CjxkaXYgY2xhc3M9ImRyb3AtaGludCIgaWQ9ImRyb3BIaW50Ij7wn5OCIOyXrOq4sOyXkCBIVE1MIO2MjOydvOydhCDrhpPsnLzshLjsmpQ8L2Rpdj4KPGRpdiBjbGFzcz0idG9hc3QiIGlkPSJ0b2FzdCI+PC9kaXY+CjxzY3JpcHQ+CmNvbnN0IGVkaXRvcj1kb2N1bWVudC5nZXRFbGVtZW50QnlJZCgnZWRpdG9yJyk7CmNvbnN0IHByZXZpZXc9ZG9jdW1lbnQuZ2V0RWxlbWVudEJ5SWQoJ3ByZXZpZXcnKTsKY29uc3QgYXV0b1JlZnJlc2g9ZG9jdW1lbnQuZ2V0RWxlbWVudEJ5SWQoJ2F1dG9SZWZyZXNoJyk7CmNvbnN0IGF1dG9CYWRnZT1kb2N1bWVudC5nZXRFbGVtZW50QnlJZCgnYXV0b0JhZGdlJyk7CmNvbnN0IGxpbmVJbmZvPWRvY3VtZW50LmdldEVsZW1lbnRCeUlkKCdsaW5lSW5mbycpOwpjb25zdCBjaGFyQ291bnQ9ZG9jdW1lbnQuZ2V0RWxlbWVudEJ5SWQoJ2NoYXJDb3VudCcpOwpsZXQgY3VycmVudEZpbGVOYW1lPSfqtZDsnKHslYjrgrTrrLguaHRtbCc7Cgpjb25zdCBzYW1wbGVIVE1MPWA8IURPQ1RZUEUgaHRtbD4KPGh0bWwgbGFuZz0ia28iPgo8aGVhZD4KICA8bWV0YSBjaGFyc2V0PSJVVEYtOCI+CiAgPHRpdGxlPuyDmO2UjCDslYjrgrTrrLg8L3RpdGxlPgogIDxzdHlsZT4KICAgIGJvZHl7Zm9udC1mYW1pbHk6J05vdG8gU2FucyBLUicsc2Fucy1zZXJpZjtiYWNrZ3JvdW5kOiNmNGY2Zjk7CiAgICAgICAgIGRpc3BsYXk6ZmxleDtqdXN0aWZ5LWNvbnRlbnQ6Y2VudGVyO3BhZGRpbmc6MzZweCAxOHB4O21hcmdpbjowfQogICAgLmNhcmR7YmFja2dyb3VuZDojZmZmO2JvcmRlci1yYWRpdXM6MTRweDtwYWRkaW5nOjI4cHg7bWF4LXdpZHRoOjQ2MHB4O3dpZHRoOjEwMCU7CiAgICAgICAgICBib3gtc2hhZG93OjAgNHB4IDE4cHggcmdiYSgyMCw0MSw3NSwuMDgpO3RleHQtYWxpZ246Y2VudGVyfQogICAgaDF7Y29sb3I6IzFhM2E2YzttYXJnaW46MCAwIDEwcHg7Zm9udC1zaXplOjIycHh9CiAgICBwe2NvbG9yOiM1YjZiODA7bGluZS1oZWlnaHQ6MS43O21hcmdpbjo2cHggMH0KICAgIC5kYXRle2ZvbnQtd2VpZ2h0OjcwMDtjb2xvcjojMmM1ZjhhfQogIDwvc3R5bGU+CjwvaGVhZD4KPGJvZHk+CiAgPGRpdiBjbGFzcz0iY2FyZCI+CiAgICA8aDE+S0lSRCDqtZDsnKHslYjrgrTrrLgg8J+TmDwvaDE+CiAgICA8cD7slYTrnpgg65Sw7Ji07ZGcIOyViOydmCDquIDsnpDrp4wg67CU6r+U67O07IS47JqULjwvcD4KICAgIDxwIGNsYXNzPSJkYXRlIj7qtZDsnKHsnbw6ICI1LiAxOC4iPC9wPgogICAgPHA+7Jm87Kq97JeQ7IScICI1LiAxOC4i7J2EICI2LiAyLiLroZwg67CU6r6466m0PGJyPuyYpOuluOyqvSDtmZTrqbTsl5Ag67CU66GcIOuwmOyYgeuQqeuLiOuLpC48L3A+CiAgPC9kaXY+CjwvYm9keT4KPC9odG1sPmA7CgplZGl0b3IudmFsdWU9c2FtcGxlSFRNTDsKdXBkYXRlUHJldmlldygpOwp1cGRhdGVTdGF0dXMoKTsKCmZ1bmN0aW9uIGxvYWRGaWxlKGV2ZW50KXsKICBjb25zdCBmaWxlPWV2ZW50LnRhcmdldC5maWxlc1swXTsKICBpZighZmlsZSlyZXR1cm47CiAgcmVhZEZpbGVJbnRvRWRpdG9yKGZpbGUpOwogIGV2ZW50LnRhcmdldC52YWx1ZT0nJzsKfQpmdW5jdGlvbiByZWFkRmlsZUludG9FZGl0b3IoZmlsZSl7CiAgY3VycmVudEZpbGVOYW1lPWZpbGUubmFtZTsKICBjb25zdCByZWFkZXI9bmV3IEZpbGVSZWFkZXIoKTsKICByZWFkZXIub25sb2FkPShlKT0+e2VkaXRvci52YWx1ZT1lLnRhcmdldC5yZXN1bHQ7dXBkYXRlUHJldmlldygpO3VwZGF0ZVN0YXR1cygpO3Nob3dUb2FzdCgnIicrZmlsZS5uYW1lKyciIOu2iOufrOyYpOq4sCDsmYTro4whJyk7fTsKICByZWFkZXIucmVhZEFzVGV4dChmaWxlLCdVVEYtOCcpOwp9Cgpjb25zdCBkcm9wWm9uZT1kb2N1bWVudC5nZXRFbGVtZW50QnlJZCgnbWFpbkxheW91dCcpOwpjb25zdCBkcm9wSGludD1kb2N1bWVudC5nZXRFbGVtZW50QnlJZCgnZHJvcEhpbnQnKTsKZHJvcFpvbmUuYWRkRXZlbnRMaXN0ZW5lcignZHJhZ292ZXInLChlKT0+e2UucHJldmVudERlZmF1bHQoKTtkcm9wSGludC5zdHlsZS5kaXNwbGF5PSdmbGV4Jzt9KTsKZHJvcFpvbmUuYWRkRXZlbnRMaXN0ZW5lcignZHJhZ2xlYXZlJywoZSk9PntpZihlLnJlbGF0ZWRUYXJnZXQ9PT1udWxsKWRyb3BIaW50LnN0eWxlLmRpc3BsYXk9J25vbmUnO30pOwpkcm9wWm9uZS5hZGRFdmVudExpc3RlbmVyKCdkcm9wJywoZSk9PnsKICBlLnByZXZlbnREZWZhdWx0KCk7ZHJvcEhpbnQuc3R5bGUuZGlzcGxheT0nbm9uZSc7CiAgY29uc3QgZmlsZT1lLmRhdGFUcmFuc2Zlci5maWxlc1swXTsKICBpZighZmlsZXx8KCFmaWxlLm5hbWUuZW5kc1dpdGgoJy5odG1sJykmJiFmaWxlLm5hbWUuZW5kc1dpdGgoJy5odG0nKSkpe3Nob3dUb2FzdCgnSFRNTCDtjIzsnbzrp4wg7Je0IOyImCDsnojslrTsmpQhJyk7cmV0dXJuO30KICByZWFkRmlsZUludG9FZGl0b3IoZmlsZSk7Cn0pOwoKbGV0IGRlYm91bmNlVGltZXI7CmVkaXRvci5hZGRFdmVudExpc3RlbmVyKCdpbnB1dCcsKCk9PnsKICB1cGRhdGVTdGF0dXMoKTsKICBpZihhdXRvUmVmcmVzaC5jaGVja2VkKXtjbGVhclRpbWVvdXQoZGVib3VuY2VUaW1lcik7ZGVib3VuY2VUaW1lcj1zZXRUaW1lb3V0KHVwZGF0ZVByZXZpZXcsNDAwKTt9Cn0pOwplZGl0b3IuYWRkRXZlbnRMaXN0ZW5lcigna2V5ZG93bicsKGUpPT57CiAgaWYoZS5rZXk9PT0nVGFiJyl7ZS5wcmV2ZW50RGVmYXVsdCgpO2NvbnN0IHM9ZWRpdG9yLnNlbGVjdGlvblN0YXJ0LGVuZD1lZGl0b3Iuc2VsZWN0aW9uRW5kOwogICAgZWRpdG9yLnZhbHVlPWVkaXRvci52YWx1ZS5zdWJzdHJpbmcoMCxzKSsnICAnK2VkaXRvci52YWx1ZS5zdWJzdHJpbmcoZW5kKTsKICAgIGVkaXRvci5zZWxlY3Rpb25TdGFydD1lZGl0b3Iuc2VsZWN0aW9uRW5kPXMrMjt9CiAgaWYoKGUuY3RybEtleXx8ZS5tZXRhS2V5KSYmZS5rZXk9PT0ncycpe2UucHJldmVudERlZmF1bHQoKTtkb3dubG9hZEZpbGUoKTt9Cn0pOwplZGl0b3IuYWRkRXZlbnRMaXN0ZW5lcigna2V5dXAnLHVwZGF0ZVN0YXR1cyk7CmVkaXRvci5hZGRFdmVudExpc3RlbmVyKCdjbGljaycsdXBkYXRlU3RhdHVzKTsKCmF1dG9SZWZyZXNoLmFkZEV2ZW50TGlzdGVuZXIoJ2NoYW5nZScsKCk9PnsKICBjb25zdCBvbj1hdXRvUmVmcmVzaC5jaGVja2VkOwogIGF1dG9CYWRnZS50ZXh0Q29udGVudD1vbj8n7J6Q64+ZIOyXheuNsOydtO2KuCDsvJzsp5AnOifsnpDrj5kg7JeF642w7J207Yq4IOq6vOynkCc7CiAgYXV0b0JhZGdlLmNsYXNzTGlzdC50b2dnbGUoJ29mZicsIW9uKTsKfSk7CgpmdW5jdGlvbiB1cGRhdGVQcmV2aWV3KCl7CiAgY29uc3QgYmxvYj1uZXcgQmxvYihbZWRpdG9yLnZhbHVlXSx7dHlwZTondGV4dC9odG1sJ30pOwogIGNvbnN0IHVybD1VUkwuY3JlYXRlT2JqZWN0VVJMKGJsb2IpOwogIHByZXZpZXcuc3JjPXVybDsKICBzZXRUaW1lb3V0KCgpPT5VUkwucmV2b2tlT2JqZWN0VVJMKHVybCksMTUwMCk7Cn0KZnVuY3Rpb24gcmVmcmVzaFByZXZpZXcoKXt1cGRhdGVQcmV2aWV3KCk7c2hvd1RvYXN0KCfrr7jrpqzrs7TquLAg7IOI66Gc6rOg7LmoIOyZhOujjCEnKTt9CmZ1bmN0aW9uIHVwZGF0ZVN0YXR1cygpewogIGNvbnN0IHRleHQ9ZWRpdG9yLnZhbHVlO2NvbnN0IHBvcz1lZGl0b3Iuc2VsZWN0aW9uU3RhcnQ7CiAgY29uc3QgbGluZXM9dGV4dC5zdWJzdHJpbmcoMCxwb3MpLnNwbGl0KCdcbicpOwogIGxpbmVJbmZvLnRleHRDb250ZW50PWxpbmVzLmxlbmd0aCsn7KSELCAnKyhsaW5lc1tsaW5lcy5sZW5ndGgtMV0ubGVuZ3RoKzEpKyfsubgnOwogIGNoYXJDb3VudC50ZXh0Q29udGVudD10ZXh0Lmxlbmd0aCsn7J6QJzsKfQpmdW5jdGlvbiBjb3B5Q29kZSgpewogIGlmKG5hdmlnYXRvci5jbGlwYm9hcmQmJm5hdmlnYXRvci5jbGlwYm9hcmQud3JpdGVUZXh0KXsKICAgIG5hdmlnYXRvci5jbGlwYm9hcmQud3JpdGVUZXh0KGVkaXRvci52YWx1ZSkudGhlbigoKT0+c2hvd1RvYXN0KCfsvZTrk5zqsIAg67O17IKs65CQ7Ja07JqUIScpKS5jYXRjaChmYWxsYmFja0NvcHkpOwogIH1lbHNle2ZhbGxiYWNrQ29weSgpO30KfQpmdW5jdGlvbiBmYWxsYmFja0NvcHkoKXsKICBjb25zdCB0YT1kb2N1bWVudC5jcmVhdGVFbGVtZW50KCd0ZXh0YXJlYScpO3RhLnZhbHVlPWVkaXRvci52YWx1ZTt0YS5zdHlsZS5wb3NpdGlvbj0nZml4ZWQnO3RhLnN0eWxlLm9wYWNpdHk9JzAnOwogIGRvY3VtZW50LmJvZHkuYXBwZW5kQ2hpbGQodGEpO3RhLnNlbGVjdCgpO3RyeXtkb2N1bWVudC5leGVjQ29tbWFuZCgnY29weScpO31jYXRjaChlKXt9ZG9jdW1lbnQuYm9keS5yZW1vdmVDaGlsZCh0YSk7CiAgc2hvd1RvYXN0KCfsvZTrk5zqsIAg67O17IKs65CQ7Ja07JqUIScpOwp9CmZ1bmN0aW9uIGRvd25sb2FkRmlsZSgpewogIGNvbnN0IGJsb2I9bmV3IEJsb2IoW2VkaXRvci52YWx1ZV0se3R5cGU6J3RleHQvaHRtbCd9KTsKICBjb25zdCBhPWRvY3VtZW50LmNyZWF0ZUVsZW1lbnQoJ2EnKTthLmhyZWY9VVJMLmNyZWF0ZU9iamVjdFVSTChibG9iKTthLmRvd25sb2FkPWN1cnJlbnRGaWxlTmFtZTsKICBkb2N1bWVudC5ib2R5LmFwcGVuZENoaWxkKGEpO2EuY2xpY2soKTthLnJlbW92ZSgpOwogIHNob3dUb2FzdCgn7KCA7J6l65CQ7Ja07JqUISAoJytjdXJyZW50RmlsZU5hbWUrJyknKTsKfQpmdW5jdGlvbiBzaG93VG9hc3QobXNnKXsKICBjb25zdCB0PWRvY3VtZW50LmdldEVsZW1lbnRCeUlkKCd0b2FzdCcpO3QudGV4dENvbnRlbnQ9bXNnO3QuY2xhc3NMaXN0LmFkZCgnc2hvdycpOwogIHNldFRpbWVvdXQoKCk9PnQuY2xhc3NMaXN0LnJlbW92ZSgnc2hvdycpLDIyMDApOwp9Cgpjb25zdCBkaXZpZGVyPWRvY3VtZW50LmdldEVsZW1lbnRCeUlkKCdkaXZpZGVyJyk7CmNvbnN0IG1haW5MYXlvdXQ9ZG9jdW1lbnQuZ2V0RWxlbWVudEJ5SWQoJ21haW5MYXlvdXQnKTsKY29uc3QgZWRpdG9yUGFuZT1kb2N1bWVudC5nZXRFbGVtZW50QnlJZCgnZWRpdG9yUGFuZScpOwpjb25zdCBwcmV2aWV3UGFuZT1kb2N1bWVudC5nZXRFbGVtZW50QnlJZCgncHJldmlld1BhbmUnKTsKbGV0IGRyYWdnaW5nPWZhbHNlOwpkaXZpZGVyLmFkZEV2ZW50TGlzdGVuZXIoJ21vdXNlZG93bicsKCk9PntkcmFnZ2luZz10cnVlO2RvY3VtZW50LmJvZHkuc3R5bGUuY3Vyc29yPSdjb2wtcmVzaXplJztkb2N1bWVudC5ib2R5LnN0eWxlLnVzZXJTZWxlY3Q9J25vbmUnO30pOwpkb2N1bWVudC5hZGRFdmVudExpc3RlbmVyKCdtb3VzZW1vdmUnLChlKT0+ewogIGlmKCFkcmFnZ2luZylyZXR1cm47CiAgY29uc3QgcmVjdD1tYWluTGF5b3V0LmdldEJvdW5kaW5nQ2xpZW50UmVjdCgpOwogIGNvbnN0IGNsYW1wZWQ9TWF0aC5tYXgoMjAsTWF0aC5taW4oODAsKGUuY2xpZW50WC1yZWN0LmxlZnQpL3JlY3Qud2lkdGgqMTAwKSk7CiAgZWRpdG9yUGFuZS5zdHlsZS53aWR0aD1jbGFtcGVkKyclJztwcmV2aWV3UGFuZS5zdHlsZS53aWR0aD0oMTAwLWNsYW1wZWQpKyclJzsKICBlZGl0b3JQYW5lLnN0eWxlLmZsZXg9cHJldmlld1BhbmUuc3R5bGUuZmxleD0nbm9uZSc7Cn0pOwpkb2N1bWVudC5hZGRFdmVudExpc3RlbmVyKCdtb3VzZXVwJywoKT0+e2RyYWdnaW5nPWZhbHNlO2RvY3VtZW50LmJvZHkuc3R5bGUuY3Vyc29yPWRvY3VtZW50LmJvZHkuc3R5bGUudXNlclNlbGVjdD0nJzt9KTsKPC9zY3JpcHQ+CjwvYm9keT4KPC9odG1sPgo=";
+const HTML_EDITOR_SRCDOC = (function(){
+  try{
+    const bin = atob(HTML_EDITOR_B64);
+    const bytes = new Uint8Array(bin.length);
+    for(let i=0;i<bin.length;i++){ bytes[i]=bin.charCodeAt(i); }
+    return new TextDecoder("utf-8").decode(bytes);
+  }catch(e){ return ""; }
+})();
+function injectHtmlEditor(){
+  document.querySelectorAll(".html-editor-frame").forEach(fr=>{
+    if(fr.getAttribute("srcdoc")) return;
+    fr.setAttribute("srcdoc", HTML_EDITOR_SRCDOC);
+  });
 }
 
 /* ====== PAGE SWITCH ====== */
