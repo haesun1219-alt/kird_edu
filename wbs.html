@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>회의록 기반 WBS 업무관리 도구</title>
+<style>
+  :root {
+    --bg: #f5f7fb;
+    --card: #ffffff;
+    --text: #182033;
+    --muted: #667085;
+    --line: #d9e1ee;
+    --primary: #2454d6;
+    --primary-dark: #183c9e;
+    --soft-blue: #edf3ff;
+    --green: #15803d;
+    --yellow: #a16207;
+    --red: #b42318;
+    --gray: #475467;
+    --purple: #6941c6;
+    --shadow: 0 10px 30px rgba(31, 41, 55, 0.08);
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans KR", Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.55;
+  }
+  header {
+    background: linear-gradient(135deg, #132b6f 0%, #2454d6 58%, #4776e6 100%);
+    color: #fff;
+    padding: 34px 24px;
+  }
+  .wrap { max-width: 1240px; margin: 0 auto; padding: 0 18px; }
+  header h1 { margin: 0 0 8px; font-size: 28px; letter-spacing: -0.04em; }
+  header p { margin: 0; opacity: .9; font-size: 15px; }
+  main { padding: 24px 0 60px; }
+  .grid { display: grid; grid-template-columns: 1fr; gap: 18px; }
+  section {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 18px;
+    box-shadow: var(--shadow);
+    padding: 22px;
+  }
+  .section-title { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 14px; }
+  h2 { margin: 0; font-size: 20px; letter-spacing: -0.03em; }
+  .hint { color: var(--muted); font-size: 13px; margin: 6px 0 0; }
+  textarea {
+    width: 100%; min-height: 230px; border: 1px solid var(--line); border-radius: 14px;
+    padding: 15px; resize: vertical; font-size: 14px; outline: none; background: #fbfcff;
+  }
+  textarea:focus, input:focus, select:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(36, 84, 214, .12); }
+  .btn-row { display: flex; flex-wrap: wrap; gap: 9px; margin-top: 12px; }
+  button, .file-label {
+    border: 0; border-radius: 10px; padding: 10px 14px; font-weight: 700; cursor: pointer;
+    background: var(--soft-blue); color: var(--primary-dark); font-size: 14px;
+  }
+  button.primary { background: var(--primary); color: #fff; }
+  button.danger { background: #fff1f0; color: var(--red); }
+  button:hover, .file-label:hover { filter: brightness(.97); }
+  input[type="file"] { display: none; }
+  .notice { background: #fff8e6; color: #704b00; border: 1px solid #f0d48a; border-radius: 12px; padding: 11px 13px; font-size: 13px; margin-top: 12px; }
+  .dash { display: grid; grid-template-columns: repeat(5, minmax(120px, 1fr)); gap: 12px; }
+  .metric { border: 1px solid var(--line); border-radius: 16px; padding: 15px; background: #fbfcff; }
+  .metric strong { display: block; font-size: 27px; margin-top: 4px; }
+  .metric span { color: var(--muted); font-size: 13px; }
+  .toolbar { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 10px; align-items: center; margin-bottom: 14px; }
+  .filters { display: flex; flex-wrap: wrap; gap: 8px; }
+  .filters button.active { background: var(--primary); color: #fff; }
+  .cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(360px, 1fr)); gap: 14px; }
+  .task-card { border: 1px solid var(--line); border-radius: 18px; padding: 16px; background: #fff; box-shadow: 0 6px 18px rgba(31,41,55,.05); }
+  .card-head { display: flex; justify-content: space-between; align-items: start; gap: 10px; border-bottom: 1px solid #eef2f7; padding-bottom: 12px; margin-bottom: 12px; }
+  .badge { display: inline-flex; align-items: center; border-radius: 999px; padding: 5px 9px; font-size: 12px; font-weight: 800; white-space: nowrap; }
+  .status-진행전 { background: #f2f4f7; color: var(--gray); }
+  .status-진행중 { background: #e9f2ff; color: var(--primary-dark); }
+  .status-검토중 { background: #f4ebff; color: var(--purple); }
+  .status-완료 { background: #ecfdf3; color: var(--green); }
+  .status-보류 { background: #fff1f0; color: var(--red); }
+  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .field { display: flex; flex-direction: column; gap: 5px; }
+  .field.full { grid-column: 1 / -1; }
+  label { font-size: 12px; color: var(--muted); font-weight: 800; }
+  input, select {
+    width: 100%; border: 1px solid var(--line); border-radius: 10px; padding: 9px 10px; font-size: 13px; background: #fff;
+  }
+  .card-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 12px; }
+  .empty { text-align: center; color: var(--muted); padding: 36px 10px; border: 1px dashed var(--line); border-radius: 16px; background: #fbfcff; }
+
+  /* 분석 미리보기 모달 */
+  .pv-overlay {
+    display: none; position: fixed; inset: 0; background: rgba(15, 23, 42, .5);
+    z-index: 50; align-items: center; justify-content: center; padding: 18px;
+  }
+  .pv-modal {
+    background: var(--card); border-radius: 18px; width: 100%; max-width: 720px;
+    max-height: 88vh; display: flex; flex-direction: column; box-shadow: 0 24px 60px rgba(15,23,42,.35);
+    overflow: hidden;
+  }
+  .pv-head { padding: 18px 20px; border-bottom: 1px solid var(--line); }
+  .pv-head h3 { margin: 0 0 4px; font-size: 18px; letter-spacing: -0.03em; }
+  .pv-head p { margin: 0; color: var(--muted); font-size: 13px; }
+  .pv-tools { display: flex; gap: 8px; align-items: center; padding: 10px 20px; border-bottom: 1px solid #eef2f7; background: #fbfcff; font-size: 13px; }
+  .pv-tools .spacer { flex: 1; }
+  .pv-tools button { padding: 7px 11px; font-size: 13px; }
+  .pv-body { overflow-y: auto; padding: 10px 14px; }
+  .pv-row { display: flex; gap: 10px; padding: 12px; border: 1px solid var(--line); border-radius: 14px; margin: 8px 4px; background: #fff; }
+  .pv-row.off { opacity: .5; background: #fbfcff; }
+  .pv-check { padding-top: 3px; }
+  .pv-check input { width: 18px; height: 18px; }
+  .pv-fields { flex: 1; display: flex; flex-direction: column; gap: 7px; }
+  .pv-line { display: flex; flex-wrap: wrap; gap: 6px; }
+  .pv-tag { font-size: 11px; font-weight: 800; border-radius: 999px; padding: 3px 8px; }
+  .pv-tag.new { background: #ecfdf3; color: var(--green); }
+  .pv-tag.upd { background: #e9f2ff; color: var(--primary-dark); }
+  .pv-tag.warn { background: #fff4e0; color: #8a5a00; }
+  .pv-name { font-weight: 700; }
+  .pv-sub { display: grid; grid-template-columns: 1fr 150px; gap: 8px; }
+  .pv-detail { font-size: 12px; color: var(--muted); background: #fbfcff; border-radius: 8px; padding: 7px 9px; border: 1px solid #eef2f7; }
+  .pv-foot { display: flex; justify-content: space-between; align-items: center; gap: 10px; padding: 14px 20px; border-top: 1px solid var(--line); }
+  .pv-foot .count { color: var(--muted); font-size: 13px; }
+  @media (max-width: 760px) {
+    .dash { grid-template-columns: 1fr 1fr; }
+    .cards { grid-template-columns: 1fr; }
+    .form-grid { grid-template-columns: 1fr; }
+    .pv-sub { grid-template-columns: 1fr; }
+    header h1 { font-size: 23px; }
+  }
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <h1>회의록 기반 WBS 업무관리 도구</h1>
+    <p>회의록 텍스트에서 업무 후보를 추출하고, 일정·진척·협업·보고 현황을 브라우저 안에서 관리합니다.</p>
+  </div>
+</header>
+<main class="wrap grid">
+  <section>
+    <div class="section-title">
+      <div>
+        <h2>1. 회의록 입력 및 분석</h2>
+        <p class="hint">회의록을 붙여넣고 분석하면 업무 후보를 <b>미리보기</b>로 먼저 확인·수정한 뒤 WBS 카드로 반영합니다. 동일하거나 유사한 업무명은 기존 카드가 갱신됩니다.</p>
+      </div>
+    </div>
+    <textarea id="minutesInput" placeholder="회의록을 입력하세요. 예: 교육담당자는 2026년 7월 15일까지 공동 교육과정 운영안을 작성하고 내부 검토를 요청하기로 했다."></textarea>
+    <div class="btn-row">
+      <button class="primary" onclick="analyzeMinutes()">회의록 분석 (미리보기)</button>
+      <button onclick="addBlankTask()">빈 업무 카드 추가</button>
+      <button onclick="loadSample()">예시 회의록 불러오기</button>
+      <button onclick="saveJson()">JSON 백업</button>
+      <label class="file-label" for="jsonImport">JSON 복원</label>
+      <input id="jsonImport" type="file" accept=".json,application/json" onchange="importJson(event)" />
+      <button onclick="downloadExcel()">엑셀 다운로드</button>
+      <button class="danger" onclick="clearAll()">전체 삭제</button>
+    </div>
+    <div class="notice">※ 자동 분석은 외부 서버나 AI API를 사용하지 않는 <b>규칙 기반 로직</b>입니다. 개인정보·민감정보는 외부로 전송되지 않습니다. 접속어 기준 문장/절 분리, 상대 날짜(내일·다음 주·이번 달 말 등), 직책·부서 인식을 지원하지만 문장 구조가 복잡한 회의록은 일부 업무가 누락되거나 과도하게 추출될 수 있어, <b>반영 전 미리보기에서 직접 확인·수정</b>하시길 권장합니다.</div>
+  </section>
+
+  <section>
+    <div class="section-title">
+      <div>
+        <h2>2. 종합 대시보드</h2>
+        <p class="hint">진척률별 업무 수와 협업·보고 필요 현황을 요약합니다.</p>
+      </div>
+    </div>
+    <div class="dash" id="dashboard"></div>
+  </section>
+
+  <section>
+    <div class="toolbar">
+      <div>
+        <h2>3. WBS 업무 카드</h2>
+        <p class="hint">모든 필드는 화면에서 직접 수정할 수 있으며, 변경 사항은 브라우저 LocalStorage에 자동 저장됩니다.</p>
+      </div>
+      <div class="filters" id="filters"></div>
+    </div>
+    <div id="cards" class="cards"></div>
+  </section>
+</main>
+
+<!-- 분석 미리보기 모달 -->
+<div class="pv-overlay" id="previewOverlay">
+  <div class="pv-modal">
+    <div class="pv-head">
+      <h3>분석 결과 미리보기</h3>
+      <p>반영할 업무를 선택하고, 업무명·담당자·기한을 확정 전에 수정하세요. <b>날짜 추정 / 담당자 미지정</b> 표시는 확인이 필요한 항목입니다.</p>
+    </div>
+    <div class="pv-tools">
+      <button onclick="pvToggleAll(true)">전체 선택</button>
+      <button onclick="pvToggleAll(false)">전체 해제</button>
+      <span class="spacer"></span>
+      <span class="count"><b id="pvCount">0</b>건 선택됨</span>
+    </div>
+    <div class="pv-body" id="previewBody"></div>
+    <div class="pv-foot">
+      <button onclick="closePreview()">취소</button>
+      <button class="primary" onclick="applyPreview()">선택 항목 WBS 반영</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const STORAGE_KEY = 'meeting_wbs_tasks_v1';
+const statuses = ['진행 전', '진행 중', '검토 중', '완료', '보류'];
+const reportStatuses = ['해당없음', '보고전', '수정요청', '보고완료'];
+let tasks = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+let currentFilter = '전체';
+let previewCandidates = [];
+
+// 업무 동사 사전 (확장)
+const ACTION_VERBS = ['작성','정리','검토','수정','보완','취합','공유','보고','요청','협의','확정','준비','추진','운영','개최','발송','제출','등록','반영','점검','관리','분석','설계','개발','제작','배포','수립','마련','조사','기획','편성','섭외','안내','공지','구성','선정','평가','확인','전달','회신','상신','결재','승인','논의','조율','배정','산출','도출','완료','시행','실시','정비','개선','수합','정산','신청','접수','발간','발표'];
+const VERB_ALT = ACTION_VERBS.join('|');
+const VERB_RE = new RegExp('(' + VERB_ALT + ')');
+
+function uid(){ return 'T' + Date.now().toString(36) + Math.random().toString(36).slice(2,7); }
+function today(){ return new Date().toISOString().slice(0,10); }
+function normalizeStatus(s){ return (s || '진행 전').replace(/\s/g,''); }
+function save(){ localStorage.setItem(STORAGE_KEY, JSON.stringify(tasks)); render(); }
+function escapeHtml(v){ return String(v ?? '').replace(/[&<>"]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m])); }
+
+/* ---------- 날짜 파싱 (절대 + 상대 표현) ---------- */
+function parseKoreanDate(text){
+  const base = new Date(); base.setHours(0,0,0,0);
+  const pad = n => String(n).padStart(2,'0');
+  const iso = d => `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
+  const addDays = (d,n) => { const x = new Date(d); x.setDate(x.getDate()+n); return x; };
+  const eom = (y,m0) => new Date(y, m0+1, 0);               // 해당 월 말일
+  const WD = {'일':0,'월':1,'화':2,'수':3,'목':4,'금':5,'토':6};
+  // 특정 주(weekOffset: 0=이번주, 1=다음주)의 요일 날짜. 주 시작은 월요일.
+  function weekdayDate(weekOffset, wd){
+    const cur = base.getDay();                               // 0=일 .. 6=토
+    const mondayThis = addDays(base, cur === 0 ? -6 : 1 - cur);
+    const monday = addDays(mondayThis, weekOffset * 7);
+    return addDays(monday, wd === 0 ? 6 : wd - 1);
+  }
+  let m;
+
+  // 1) 절대 날짜: YYYY(년/./-) M(월/./-) D
+  m = text.match(/(20\d{2})\s*[.년\-\/]\s*(\d{1,2})\s*[.월\-\/]\s*(\d{1,2})/);
+  if(m) return { date: `${m[1]}-${pad(m[2])}-${pad(m[3])}`, approx:false };
+
+  // 2) M월 D일 (연도 생략 → 올해, 이미 지난 날짜면 내년)
+  m = text.match(/(\d{1,2})\s*월\s*(\d{1,2})\s*일?/);
+  if(m){
+    let y = base.getFullYear();
+    let d = new Date(y, +m[1]-1, +m[2]);
+    if(d < base){ d = new Date(y+1, +m[1]-1, +m[2]); }
+    return { date: iso(d), approx:false };
+  }
+
+  // 3) N월 말 / 월말 / 말일
+  m = text.match(/(\d{1,2})\s*월\s*말/);
+  if(m){ let y = base.getFullYear(); if(+m[1]-1 < base.getMonth()) y++; return { date: iso(eom(y, +m[1]-1)), approx:true }; }
+  if(/(이번\s*달|이달|금월|당월)\s*말|월말|말일/.test(text)) return { date: iso(eom(base.getFullYear(), base.getMonth())), approx:true };
+  if(/(다음\s*달|담달|내달|익월|다음달)\s*말/.test(text)) return { date: iso(eom(base.getFullYear(), base.getMonth()+1)), approx:true };
+
+  // 4) 상대 일 표현
+  if(/글피/.test(text)) return { date: iso(addDays(base,3)), approx:true };
+  if(/내일모레|모레/.test(text)) return { date: iso(addDays(base,2)), approx:true };
+  if(/내일|익일/.test(text)) return { date: iso(addDays(base,1)), approx:true };
+  if(/오늘|금일/.test(text)) return { date: iso(base), approx:true };
+
+  // 5) N일/주/개월 후·뒤·이내
+  m = text.match(/(\d{1,2})\s*일\s*(?:후|뒤|이내|안|내)/);
+  if(m) return { date: iso(addDays(base, +m[1])), approx:true };
+  m = text.match(/(\d{1,2})\s*주\s*(?:후|뒤|이내|안|내)/);
+  if(m) return { date: iso(addDays(base, +m[1]*7)), approx:true };
+  m = text.match(/(\d{1,2})\s*개?월\s*(?:후|뒤|이내|안|내)/);
+  if(m){ const d = new Date(base); d.setMonth(d.getMonth()+ +m[1]); return { date: iso(d), approx:true }; }
+
+  // 6) 이번/다음 주 (+ 요일)
+  m = text.match(/(이번|금|다음|차|담|내)\s*주(?:\s*(초|중|말))?\s*(?:([일월화수목금토])\s*요일)?/);
+  if(m){
+    const weekOffset = /이번|금/.test(m[1]) ? 0 : 1;
+    if(m[3]) return { date: iso(weekdayDate(weekOffset, WD[m[3]])), approx:true };  // 요일 지정
+    if(m[2] === '초') return { date: iso(weekdayDate(weekOffset, 1)), approx:true }; // 월요일
+    if(m[2] === '말') return { date: iso(weekdayDate(weekOffset, 0)), approx:true }; // 일요일(주말)
+    return { date: iso(weekdayDate(weekOffset, 5)), approx:true };                   // 기본: 금요일(마감 관점)
+  }
+
+  // 7) 요일 단독 (다가오는 해당 요일)
+  m = text.match(/([일월화수목금토])\s*요일/);
+  if(m){
+    const wd = WD[m[1]];
+    let d = weekdayDate(0, wd);
+    if(d < base) d = addDays(d, 7);
+    return { date: iso(d), approx:true };
+  }
+
+  // 8) 다음 달 / 익월 (말일 아님 → 다음 달 말일을 마감으로 간주)
+  if(/(다음\s*달|담달|내달|익월|다음달)/.test(text)) return { date: iso(eom(base.getFullYear(), base.getMonth()+1)), approx:true };
+
+  return { date:'', approx:false };
+}
+
+/* ---------- 담당자 / 협업 / 보고 추론 ---------- */
+// 날짜·시간 표현을 문자열에서 제거 (담당자·업무명 추론 시 잡음 제거용)
+function stripDatePhrases(s){
+  return s
+    .replace(/20\d{2}\s*[.년\-\/]\s*\d{1,2}\s*[.월\-\/]\s*\d{1,2}\s*일?/g,' ')
+    .replace(/\d{1,2}\s*월\s*\d{1,2}\s*일?/g,' ')
+    .replace(/\d{1,2}\s*월\s*말/g,' ')
+    .replace(/\d{1,2}\s*(?:일|주|개?월)\s*(?:후|뒤|이내|안|내)/g,' ')
+    .replace(/(?:이번|금|다음|차|담|내)\s*주(?:\s*(?:초|중|말))?(?:\s*[일월화수목금토]\s*요일)?/g,' ')
+    .replace(/[일월화수목금토]\s*요일/g,' ')
+    .replace(/(?:다음\s*달|담달|내달|익월|이번\s*달|이달|금월|당월|다음달)\s*말?/g,' ')
+    .replace(/월말|말일/g,' ')
+    .replace(/오늘|금일|내일모레|내일|모레|글피|익일/g,' ')
+    .replace(/까지|안에|이내에?|무렵|경까지|경/g,' ');
+}
+
+function inferAssignee(sentence){
+  const s = stripDatePhrases(sentence);
+  // 이름 + 직책 (교수/강사는 협업 대상으로 오인되기 쉬워 제외)
+  let m = s.match(/([가-힣]{2,4})\s*(담당관|담당자|담당|팀장|실장|본부장|센터장|부장|차장|과장|대리|주임|사원|위원장|위원|연구원|연구관|책임|선임|수석|매니저|리더)/);
+  if(m) return (m[1] + m[2]).replace(/\s+/g,'');
+  // 이름 + PM
+  m = s.match(/([가-힣]{2,4})\s*(PM)\b/);
+  if(m) return (m[1] + m[2]).replace(/\s+/g,'');
+  // 직책 단독
+  m = s.match(/(교육담당자|담당자|팀장|실장|부장|과장|대리|주임|위원|연구원|매니저|PM)/);
+  if(m) return m[1];
+  // 부서/조직 (뒤따르는 조사는 제외)
+  m = s.match(/([가-힣]{2,10}?)(팀|부서|본부|센터|과|실|국|처|기관)(?=[은는이가와과및\s,]|$)/);
+  if(m) return m[1] + m[2];
+  return '';
+}
+
+function inferCollaboration(sentence){
+  const need = /(협업|협의|공동|연계|의견\s*수렴|검토\s*요청|공유|타\s*부서|부서|기관|교수진|전문가|합동|공동주관|참여기관|연석)/.test(sentence);
+  const targetMatch = sentence.match(/(교수진|전문가|상사|팀장|실장|부서|기관|협력기관|연구관리기관|운영부서|평가팀|기획팀|홍보팀|전산팀|외부위원|자문위원|참여기관|담당부서)/g);
+  return { need: need ? '필요' : '불필요', target: targetMatch ? [...new Set(targetMatch)].join(', ') : '' };
+}
+
+function inferReport(sentence){
+  const needReport = /(보고|내부\s*검토|결재|승인|상신|보고서|보고자료|보고안|의사결정|결정권자)/.test(sentence);
+  const d = parseKoreanDate(sentence);
+  return { due: needReport ? d.date : '', status: needReport ? '보고전' : '해당없음' };
+}
+
+/* ---------- 문장/절 분리 + 업무명 추출 ---------- */
+function hasVerb(s){ return VERB_RE.test(s); }
+
+function splitSentences(text){
+  return text
+    .replace(/\r/g,'')
+    .split(/\n+|(?<=[.?!。])\s+|(?<=[다요함음됨임])\s+(?=[가-힣A-Za-z0-9])/)
+    .map(s => s.trim())
+    .filter(Boolean);
+}
+
+// 한 문장 안의 병렬 업무를 절 단위로 분리 (접속어 기준)
+function splitClauses(sentence){
+  const parts = sentence.split(
+    /(?<=[가-힣])(?:하고|하며|하여|하고서|했고|였고|한\s*뒤에?|한\s*후에?)\s+|\s+(?:그리고|또한|아울러|및|이어서|다음으로|이후)\s+/
+  );
+  return parts.map(s => s.trim()).filter(Boolean);
+}
+
+function inferTaskName(clause){
+  const clean = clause.replace(/\s+/g,' ').trim();
+  // 한국어 서술어는 절 뒤쪽에 오므로 "마지막" 동사를 술어로 채택
+  // (명사 합성어에 포함된 동사어 — 연구'관리'기관, '기획'팀 — 오인 방지)
+  const gRe = new RegExp('(' + VERB_ALT + ')', 'g');
+  let vm = null, mm;
+  while((mm = gRe.exec(clean)) !== null) vm = mm;
+  if(!vm){
+    return (stripDatePhrases(clean).replace(/[.?!]/g,'').replace(/\s+/g,' ').trim().slice(0,24) || '회의 후속 업무');
+  }
+  const verb = vm[1];
+  // 술어 앞부분에서 날짜/주어 제거 후 목적어 명사구 추출
+  let before = stripDatePhrases(clean.slice(0, vm.index));
+  before = before.replace(/^.*?(?:은|는|이|가|께서)\s+/, '').trim();  // 주어 제거
+  const words = before.split(/\s+/).filter(Boolean);
+  let obj = words.slice(-3).join(' ')
+    .replace(/(?:을|를|은|는|이|가|의|에|에게|으로|로|와|과|도|만|부터|에서|에는)$/,'')
+    .trim();
+  let name = (obj + ' ' + verb).replace(/\s+/g,' ').trim();
+  if(name.length < 2) name = verb;
+  return name.slice(0,30);
+}
+
+/* ---------- 분석 → 미리보기 ---------- */
+function analyzeMinutes(){
+  const text = document.getElementById('minutesInput').value.trim();
+  if(!text){ alert('회의록 내용을 입력하세요.'); return; }
+
+  const sentences = splitSentences(text);
+  const raw = [];
+  sentences.forEach(sentence => {
+    if(!hasVerb(sentence)) return;
+    const sharedDate = parseKoreanDate(sentence);
+    const sharedAssignee = inferAssignee(sentence);
+    let clauses = splitClauses(sentence).filter(hasVerb);
+    if(clauses.length === 0) clauses = [sentence];
+    clauses.forEach(clause => {
+      const localDate = parseKoreanDate(clause);
+      const localAssignee = inferAssignee(clause);
+      const chosen = localDate.date ? localDate : sharedDate;
+      const collab = inferCollaboration(clause);
+      const report = inferReport(clause);
+      const name = inferTaskName(clause);
+      const match = tasks.find(t => t.name === name || similarity(t.name, name) > .72);
+      raw.push({
+        include: true, name, detail: clause.trim(),
+        assignee: localAssignee || sharedAssignee || '',
+        endDate: chosen.date || '', dateApprox: !!(chosen.approx && chosen.date),
+        collabNeed: collab.need, collabTarget: collab.target,
+        reportDue: report.due, reportStatus: report.status,
+        matchId: match ? match.id : null
+      });
+    });
+  });
+
+  // 이번 배치 내 동일 업무명 병합
+  const seen = new Map();
+  previewCandidates = [];
+  raw.forEach(c => {
+    const key = c.name.replace(/\s/g,'');
+    if(seen.has(key)){
+      const ex = seen.get(key);
+      ex.detail = mergeText(ex.detail, c.detail);
+      ex.endDate = ex.endDate || c.endDate;
+      ex.assignee = ex.assignee || c.assignee;
+      if(c.collabNeed === '필요') ex.collabNeed = '필요';
+      ex.collabTarget = mergeList(ex.collabTarget, c.collabTarget);
+      ex.reportDue = ex.reportDue || c.reportDue;
+      if(ex.reportStatus === '해당없음' && c.reportStatus !== '해당없음') ex.reportStatus = c.reportStatus;
+    } else {
+      seen.set(key, c); previewCandidates.push(c);
+    }
+  });
+
+  if(previewCandidates.length === 0){
+    alert('업무 후보를 찾지 못했습니다. 업무 동사(작성·검토·보고 등)와 기한이 드러나도록 회의록 문장을 보완해 주세요.');
+    return;
+  }
+  openPreview();
+}
+
+/* ---------- 미리보기 모달 ---------- */
+function openPreview(){ document.getElementById('previewOverlay').style.display = 'flex'; renderPreview(); }
+function closePreview(){ document.getElementById('previewOverlay').style.display = 'none'; previewCandidates = []; }
+function pvSet(i, field, value){ previewCandidates[i][field] = value; if(field === 'include') renderPreview(); else document.getElementById('pvCount').textContent = previewCandidates.filter(c=>c.include).length; }
+function pvToggleAll(v){ previewCandidates.forEach(c => c.include = v); renderPreview(); }
+function renderPreview(){
+  const body = document.getElementById('previewBody');
+  body.innerHTML = previewCandidates.map((c,i) => {
+    const stateTag = c.matchId ? '<span class="pv-tag upd">기존 카드 갱신</span>' : '<span class="pv-tag new">신규</span>';
+    const dateTag = c.dateApprox ? '<span class="pv-tag warn">날짜 추정</span>' : (c.endDate ? '' : '<span class="pv-tag warn">기한 없음</span>');
+    const asgTag = c.assignee ? '' : '<span class="pv-tag warn">담당자 미지정</span>';
+    return `<div class="pv-row ${c.include ? '' : 'off'}">
+      <label class="pv-check"><input type="checkbox" ${c.include ? 'checked' : ''} onchange="pvSet(${i},'include',this.checked)"></label>
+      <div class="pv-fields">
+        <div class="pv-line">${stateTag}${dateTag}${asgTag}</div>
+        <input class="pv-name" value="${escapeHtml(c.name)}" oninput="pvSet(${i},'name',this.value)" placeholder="업무명">
+        <div class="pv-sub">
+          <input value="${escapeHtml(c.assignee)}" oninput="pvSet(${i},'assignee',this.value)" placeholder="담당자">
+          <input type="date" value="${escapeHtml(c.endDate)}" onchange="pvSet(${i},'endDate',this.value)">
+        </div>
+        <div class="pv-detail">${escapeHtml(c.detail)}</div>
+      </div>
+    </div>`;
+  }).join('');
+  document.getElementById('pvCount').textContent = previewCandidates.filter(c=>c.include).length;
+}
+function applyPreview(){
+  let added = 0, updated = 0;
+  previewCandidates.forEach(c => {
+    if(!c.include) return;
+    const name = (c.name || '').trim() || '회의 후속 업무';
+    const assignee = (c.assignee || '').trim() || '미지정';
+    let existing = c.matchId ? tasks.find(t => t.id === c.matchId) : null;
+    if(!existing) existing = tasks.find(t => t.name === name || similarity(t.name, name) > .72);
+    if(existing){
+      existing.detail = mergeText(existing.detail, c.detail);
+      existing.endDate = existing.endDate || c.endDate;
+      if(!existing.assignee || existing.assignee === '미지정') existing.assignee = assignee;
+      existing.collabNeed = (existing.collabNeed === '필요' || c.collabNeed === '필요') ? '필요' : '불필요';
+      existing.collabTarget = mergeList(existing.collabTarget, c.collabTarget);
+      existing.reportDue = existing.reportDue || c.reportDue;
+      if(existing.reportStatus === '해당없음' && c.reportStatus !== '해당없음') existing.reportStatus = c.reportStatus;
+      updated++;
+    } else {
+      tasks.push({
+        id: uid(), name, detail: c.detail, assignee,
+        startDate: today(), endDate: c.endDate, progress: '진행 전', status: '진행 전',
+        collabNeed: c.collabNeed, collabTarget: c.collabTarget,
+        reportDue: c.reportDue, reportStatus: c.reportStatus
+      });
+      added++;
+    }
+  });
+  closePreview();
+  save();
+  alert(`반영 완료: 신규 ${added}건, 갱신 ${updated}건이 WBS에 반영되었습니다.`);
+}
+
+function similarity(a,b){
+  a = (a||'').replace(/\s/g,''); b = (b||'').replace(/\s/g,'');
+  if(!a || !b) return 0;
+  const setA = new Set(a.split('')); const setB = new Set(b.split(''));
+  const inter = [...setA].filter(x => setB.has(x)).length;
+  const union = new Set([...setA, ...setB]).size;
+  return inter / union;
+}
+function mergeText(a,b){ return (a||'').includes(b) ? a : `${a || ''}${a ? '\n' : ''}${b}`; }
+function mergeList(a,b){ return [...new Set([...(a||'').split(',').map(x=>x.trim()).filter(Boolean), ...(b||'').split(',').map(x=>x.trim()).filter(Boolean)])].join(', '); }
+
+function addBlankTask(){
+  tasks.unshift({ id: uid(), name:'신규 업무', detail:'', assignee:'교육담당자', startDate: today(), endDate:'', progress:'진행 전', status:'진행 전', collabNeed:'불필요', collabTarget:'', reportDue:'', reportStatus:'해당없음' });
+  save();
+}
+function updateTask(id, field, value){ const t = tasks.find(x=>x.id===id); if(!t) return; t[field]=value; if(field==='progress') t.status=value; localStorage.setItem(STORAGE_KEY, JSON.stringify(tasks)); renderDashboard(); }
+function deleteTask(id){ if(confirm('이 업무 카드를 삭제할까요?')){ tasks = tasks.filter(t=>t.id!==id); save(); } }
+function duplicateTask(id){ const t = tasks.find(x=>x.id===id); if(t){ tasks.unshift({...t, id:uid(), name:t.name + ' 복사본'}); save(); } }
+
+function render(){ renderDashboard(); renderFilters(); renderCards(); }
+function renderDashboard(){
+  const box = document.getElementById('dashboard');
+  const counts = statuses.map(s => [s, tasks.filter(t => (t.progress||t.status) === s).length]);
+  const collab = tasks.filter(t => t.collabNeed === '필요').length;
+  const report = tasks.filter(t => t.reportStatus && t.reportStatus !== '해당없음' && t.reportStatus !== '보고완료').length;
+  box.innerHTML = counts.map(([s,c]) => `<div class="metric"><span>${s}</span><strong>${c}</strong></div>`).join('') +
+    `<div class="metric"><span>협업 필요</span><strong>${collab}</strong></div><div class="metric"><span>보고 대기/수정</span><strong>${report}</strong></div>`;
+}
+function renderFilters(){
+  const filters = ['전체', ...statuses];
+  document.getElementById('filters').innerHTML = filters.map(f => `<button class="${currentFilter===f?'active':''}" onclick="currentFilter='${f}'; renderCards(); renderFilters();">${f}</button>`).join('');
+}
+function renderCards(){
+  const list = currentFilter === '전체' ? tasks : tasks.filter(t => (t.progress||t.status) === currentFilter);
+  const root = document.getElementById('cards');
+  if(list.length === 0){ root.innerHTML = '<div class="empty">표시할 WBS 업무 카드가 없습니다.</div>'; return; }
+  root.innerHTML = list.map(t => cardHtml(t)).join('');
+}
+function cardHtml(t){
+  const st = t.progress || t.status || '진행 전';
+  return `<article class="task-card">
+    <div class="card-head">
+      <div class="field" style="flex:1"><label>업무명</label><input value="${escapeHtml(t.name)}" oninput="updateTask('${t.id}','name',this.value)"></div>
+      <span class="badge status-${normalizeStatus(st)}">${escapeHtml(st)}</span>
+    </div>
+    <div class="form-grid">
+      <div class="field full"><label>세부업무내용</label><input value="${escapeHtml(t.detail)}" oninput="updateTask('${t.id}','detail',this.value)"></div>
+      <div class="field"><label>담당자</label><input value="${escapeHtml(t.assignee)}" oninput="updateTask('${t.id}','assignee',this.value)"></div>
+      <div class="field"><label>진척률/상태</label><select onchange="updateTask('${t.id}','progress',this.value)">${statuses.map(s=>`<option ${st===s?'selected':''}>${s}</option>`).join('')}</select></div>
+      <div class="field"><label>시작일</label><input type="date" value="${escapeHtml(t.startDate)}" onchange="updateTask('${t.id}','startDate',this.value)"></div>
+      <div class="field"><label>종료일</label><input type="date" value="${escapeHtml(t.endDate)}" onchange="updateTask('${t.id}','endDate',this.value)"></div>
+      <div class="field"><label>협업 필요 여부</label><select onchange="updateTask('${t.id}','collabNeed',this.value)"><option ${t.collabNeed==='불필요'?'selected':''}>불필요</option><option ${t.collabNeed==='필요'?'selected':''}>필요</option></select></div>
+      <div class="field"><label>협업 대상자/부서</label><input value="${escapeHtml(t.collabTarget)}" oninput="updateTask('${t.id}','collabTarget',this.value)"></div>
+      <div class="field"><label>상사 보고 기한</label><input type="date" value="${escapeHtml(t.reportDue)}" onchange="updateTask('${t.id}','reportDue',this.value)"></div>
+      <div class="field"><label>보고 상태</label><select onchange="updateTask('${t.id}','reportStatus',this.value)">${reportStatuses.map(s=>`<option ${t.reportStatus===s?'selected':''}>${s}</option>`).join('')}</select></div>
+    </div>
+    <div class="card-actions"><button onclick="duplicateTask('${t.id}')">복제</button><button class="danger" onclick="deleteTask('${t.id}')">삭제</button></div>
+  </article>`;
+}
+
+function saveJson(){
+  downloadBlob(JSON.stringify({version:'1.0', exportedAt:new Date().toISOString(), tasks}, null, 2), `WBS_backup_${new Date().toISOString().slice(0,10)}.json`, 'application/json');
+}
+function importJson(event){
+  const file = event.target.files[0]; if(!file) return;
+  const reader = new FileReader();
+  reader.onload = e => { try { const data = JSON.parse(e.target.result); tasks = Array.isArray(data) ? data : (data.tasks || []); save(); alert('JSON 복원이 완료되었습니다.'); } catch(err){ alert('JSON 파일을 읽을 수 없습니다.'); } };
+  reader.readAsText(file, 'utf-8'); event.target.value = '';
+}
+function downloadExcel(){
+  const headers = ['업무명','세부업무내용','담당자','시작일','종료일','진척률','상태','협업 필요 여부','협업 대상자','상사 보고 기한','보고 상태'];
+  const rows = tasks.map(t => [t.name,t.detail,t.assignee,t.startDate,t.endDate,t.progress,t.status,t.collabNeed,t.collabTarget,t.reportDue,t.reportStatus]);
+  const table = `<html><head><meta charset="UTF-8"></head><body><table border="1"><tr>${headers.map(h=>`<th>${escapeHtml(h)}</th>`).join('')}</tr>${rows.map(r=>`<tr>${r.map(c=>`<td>${escapeHtml(c)}</td>`).join('')}</tr>`).join('')}</table></body></html>`;
+  downloadBlob(table, `WBS_tasks_${new Date().toISOString().slice(0,10)}.xls`, 'application/vnd.ms-excel;charset=utf-8');
+}
+function downloadBlob(content, filename, type){
+  const blob = new Blob([content], {type}); const url = URL.createObjectURL(blob);
+  const a = document.createElement('a'); a.href = url; a.download = filename; document.body.appendChild(a); a.click();
+  a.remove(); URL.revokeObjectURL(url);
+}
+function clearAll(){ if(confirm('모든 WBS 업무 카드를 삭제할까요?')){ tasks=[]; save(); } }
+function loadSample(){
+  document.getElementById('minutesInput').value = `회의일시: 2026년 7월 9일\n교육담당자는 2026년 7월 12일까지 연구관리기관 전문가 양성 과정 운영안을 작성하고 내부 검토를 요청하기로 했다.\n기획팀과 협의하여 다음 주 금요일까지 교수진 후보 명단을 정리하고 섭외 우선순위를 확정한다.\n김민수 대리는 평가팀 의견을 반영하여 이번 달 말까지 사전진단 문항을 보완한다.\n운영부서는 교육 안내문을 제작하고 3일 후까지 대상기관에 발송한다.\n교육담당자는 실장 보고를 위해 7월 24일까지 과정 추진현황 보고자료를 준비한다.`;
+}
+render();
+</script>
+</body>
+</html>
